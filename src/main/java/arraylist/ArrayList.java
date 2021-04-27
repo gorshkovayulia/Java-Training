@@ -1,69 +1,68 @@
 package arraylist;
 
+import java.util.Arrays;
+
 class ArrayList<E> {
     private Object[] array = new Object[10];
-    private int count = 0;
+    private int size = 0;
 
-    /*
-    Add a value at the end of array.
-    If array is full filled, the size of it will be increased.
-     */
+    /* Add a value at the end of array.
+    If array is full filled, the size of it will be increased. */
     public void add(E value) {
-        if (count == array.length) {
-            resize(array.length * 1.5 + 1);
+        if (size == array.length) {
+            resize((int) (array.length * 1.5 + 1));
         }
-        array[count++] = value;
+        array[size++] = value;
     }
 
-    /*
-    Set a value at the specified place of array.
-    If array is full filled, the size of it will be increased.
-     */
+    /* Set a value at the specified place of array.
+    If array is full filled, the size of it will be increased. */
     public void set(int index, E value) {
-        if (index >= count || index < 0) {
-            throw new IllegalArgumentException("Such index does not exist! Current count of elements in list is " + count);
+        if (index >= size || index < 0) {
+            throw new IllegalArgumentException("Such index does not exist! Current count of elements in list is " + size);
         }
-        if (count == array.length) {
-            resize(array.length * 1.5 + 1);
+        if (size == array.length) {
+            resize((int) (array.length * 1.5 + 1));
         }
-        System.arraycopy(array, index, array, index + 1, count - index);
+        System.arraycopy(array, index, array, index + 1, size - index);
         array[index] = value;
-        count++;
+        size++;
     }
 
-    /*
-    Remove a value from specified place in array.
-    Right part of elements starting from next index in array will be moved to the left in order to fill gaps.
-    */
+
+    /* Remove a value from specified place in array.
+    Right part of elements starting from next index in array will be moved to the left in order to fill gaps. */
     public void remove(int index) {
-        if (count == 0) {
+        if (size == 0) {
             throw new IllegalArgumentException("The list is empty!");
         }
-        if (index >= count || index < 0) {
-            throw new IllegalArgumentException("Such index does not exist! Current count of elements in list is " + count);
+        if (index >= size || index < 0) {
+            throw new IllegalArgumentException("Such index does not exist! Current count of elements in list is " + size);
         }
-        int countMoved = count - index - 1;
+        int countMoved = size - index - 1;
         System.arraycopy(array, index + 1, array, index, countMoved);
-        array[--count] = null;
+        array[--size] = null;
     }
 
     public int getCount() {
-        return count;
+        return size;
     }
 
     public E getValue(int index) {
-        if (index >= count || index < 0) {
-            throw new IllegalArgumentException("Element cannot be found! Current number of elements is " + count);
+        if (index >= size || index < 0) {
+            throw new IllegalArgumentException("Element cannot be found! Current number of elements is " + size);
         }
         return (E) array[index];
     }
 
-    /*
-    Re-create an array with new increased length.
-     */
-    private void resize(double newLength) {
+    public Object[] toArray() {
+        return Arrays.copyOf(array, size);
+    }
+
+    // Re-create an array with new increased length.
+    private void resize(int newLength) {
         Object[] newArray = new Object[(int) newLength];
-        System.arraycopy(array, 0, newArray, 0, count);
+        System.arraycopy(array, 0, newArray, 0, size);
         array = newArray;
     }
 }

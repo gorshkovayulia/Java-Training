@@ -6,8 +6,8 @@ class ArrayList<E> {
     private Object[] array = new Object[10];
     private int size = 0;
 
-    /* Add a value at the end of array.
-    If array is full filled, the size of it will be increased. */
+/*    Add a value at the end of array.
+    If array is full filled, the size of it will be increased.*/
     public void add(E value) {
         if (size == array.length) {
             resize((int) (array.length * 1.5 + 1));
@@ -15,8 +15,8 @@ class ArrayList<E> {
         array[size++] = value;
     }
 
-    /* Set a value at the specified place of array.
-    If array is full filled, the size of it will be increased. */
+/*    Set a value at the specified place of array.
+    If array is full filled, the size of it will be increased.*/
     public void set(int index, E value) {
         if (index >= size || index < 0) {
             throw new IllegalArgumentException("Such index does not exist! Current count of elements in list is " + size);
@@ -30,8 +30,8 @@ class ArrayList<E> {
     }
 
 
-    /* Remove a value from specified place in array.
-    Right part of elements starting from next index in array will be moved to the left in order to fill gaps. */
+/*    Remove a value from specified place in array.
+    Right part of elements starting from next index in array will be moved to the left in order to fill gaps.*/
     public void remove(int index) {
         if (size == 0) {
             throw new IllegalArgumentException("The list is empty!");

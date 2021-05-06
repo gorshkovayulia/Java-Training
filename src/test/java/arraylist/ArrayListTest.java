@@ -174,4 +174,10 @@ public class ArrayListTest {
         list.add(1);
         assertArrayEquals(new Object[] {1}, list.toArray());
     }
+
+    @Test
+    public void possibleToReturnAnEmptyArrayFromArrayList() {
+        ArrayList<Integer> list = new ArrayList<>();
+        assertArrayEquals(new Object[] {}, list.toArray());
+    }
 }

@@ -6,26 +6,21 @@ import static org.junit.Assert.*;
 
 public class HashTableTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void impossibleToSetNegativeCapacity() {
-        new HashTable(-1);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> new HashTable(-1));
+        assertEquals("Capacity cannot be less or equal to zero!", e.getMessage());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void impossibleToSetZeroCapacity() {
-        new HashTable(0);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> new HashTable(0));
+        assertEquals("Capacity cannot be less or equal to zero!", e.getMessage());
     }
 
     @Test
     public void possibleToSetPositiveCapacity() {
-        new HashTable(2);
-    }
-
-    @Test
-    public void possibleToPutElementInEmptySlot() {
-        HashTable table = new HashTable(2);
-        table.put("test", 10);
-        assertEquals("(test,10)", table.printSlot(0));
+        new HashTable(1);
     }
 
     @Test
@@ -38,26 +33,54 @@ public class HashTableTest {
 
     @Test
     public void valueIsUpdatedIfOldAndNewObjectsHaveTheSameKeys() {
-        HashTable table = new HashTable(10);
+        HashTable table = new HashTable(16);
         table.put("t", 15);
         table.put("t", 20);
         assertEquals(20, table.getValue("t"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void impossibleToRemoveElementWithNullKey() {
-        HashTable table = new HashTable(10);
-        table.remove(null);
+    @Test
+    public void capacityIsIncreasedIfCalculatedLoadFactorIsMoreThanDefaultLoadFactor() {
+        HashTable table = new HashTable(5);
+        table.put("t", 15);
+        table.put(6, 20);
+        table.put(7, 20);
+        table.put(8, 20);
+        assertEquals(10, table.getSize());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
+    public void capacityIsNotIncreasedIfCalculatedLoadFactorEqualsToDefaultLoadFactor() {
+        HashTable table = new HashTable(4);
+        table.put("t", 15);
+        table.put(6, 20);
+        table.put(7, 20);
+        assertEquals(4, table.getSize());
+    }
+
+    @Test
+    public void capacityIsNotIncreasedIfCalculatedLoadFactorIsLessThanDefaultLoadFactor() {
+        HashTable table = new HashTable(4);
+        table.put("t", 15);
+        table.put(6, 20);
+        assertEquals(4, table.getSize());
+    }
+
+    @Test
+    public void impossibleToRemoveElementWithNullKey() {
+        HashTable table = new HashTable(10);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> table.remove(null));
+        assertEquals("Key cannot be null!", e.getMessage());
+    }
+
+    @Test(expected = AssertionError.class)
     public void impossibleToRemoveNotExistingElement() {
         HashTable table = new HashTable(10);
         table.remove("test");
     }
 
     @Test
-    public void possibleToDeleteElementHavingPreviousNode() {
+    public void possibleToRemoveElementHavingPreviousNode() {
         HashTable table = new HashTable(10);
         table.put("t", 15);
         table.put(6, 20);
@@ -66,7 +89,7 @@ public class HashTableTest {
     }
 
     @Test
-    public void possibleToDeleteElementHavingNextNode() {
+    public void possibleToRemoveElementHavingNextNode() {
         HashTable table = new HashTable(10);
         table.put("t", 15);
         table.put(6, 20);
@@ -75,27 +98,27 @@ public class HashTableTest {
     }
 
     @Test
-    public void possibleToDeleteTheOnlyElementInSlot() {
+    public void possibleToRemoveTheOnlyElementInSlot() {
         HashTable table = new HashTable(10);
         table.put("t", 15);
         table.remove("t");
         assertEquals("null", table.printSlot(6));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void impossibleToGetValueForNullKey() {
+    @Test
+    public void returnsNullValueForNullKey() {
         HashTable table = new HashTable(10);
-        table.getValue(null);
+        assertEquals(null, table.getValue(null));
     }
 
     @Test
-    public void nullValueIsReturnedForEmptyIndex() {
+    public void returnsNullValueForNonExistingKey() {
         HashTable table = new HashTable(10);
         assertEquals(null, table.getValue(1));
     }
 
     @Test
-    public void valueOfTenIsReturnedForTheFirstIndex() {
+    public void returnsTheFirstValue() {
         HashTable table = new HashTable(10);
         table.put(0, 10);
         table.put(1, 20);
@@ -103,7 +126,7 @@ public class HashTableTest {
     }
 
     @Test
-    public void valueOfFifteenIsReturnedForTheMiddleIndex() {
+    public void returnsValuesAddedBeforeLast() {
         HashTable table = new HashTable(10);
         table.put(0, 20);
         table.put("teeeeeeeeeeee", 15);
@@ -112,67 +135,10 @@ public class HashTableTest {
     }
 
     @Test
-    public void valueOfTwentyIsReturnedForTheLastIndex() {
+    public void returnsTheLastValue() {
         HashTable table = new HashTable(10);
         table.put(0, 15);
         table.put("teee", 20);
         assertEquals(20, table.getValue("teee"));
-    }
-
-    @Test
-    public void possibleToGetIndexForStringKey() {
-        HashTable table = new HashTable(10);
-        assertEquals(6, table.getIndexForKey("t"));
-    }
-
-    @Test
-    public void possibleToGetIndexForNumberKey() {
-        HashTable table = new HashTable(10);
-        assertEquals(6, table.getIndexForKey(6));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void impossibleToGetIndexForNullKey() {
-        HashTable table = new HashTable(10);
-        table.getIndexForKey(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void impossibleToPrintSlotWithNegativeIndex() {
-        HashTable table = new HashTable(10);
-        table.printSlot(-1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void impossibleToPrintSlotWithIndexEqualsSizeOfArray() {
-        HashTable table = new HashTable(1);
-        table.printSlot(1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void impossibleToPrintSlotWithIndexMoreThanSizeOfArray() {
-        HashTable table = new HashTable(1);
-        table.printSlot(2);
-    }
-
-    @Test
-    public void possibleToPrintNullSlot () {
-        HashTable table = new HashTable(1);
-        assertEquals("null", table.printSlot(0));
-    }
-
-    @Test
-    public void possibleToPrintSlotWithOneElement () {
-        HashTable table = new HashTable(1);
-        table.put(0, 15);
-        assertEquals("(0,15)", table.printSlot(0));
-    }
-
-    @Test
-    public void possibleToPrintSlotWithSeveralElements () {
-        HashTable table = new HashTable(1);
-        table.put(0, 15);
-        table.put("test", 15);
-        assertEquals("(test,15)->(0,15)", table.printSlot(0));
     }
 }

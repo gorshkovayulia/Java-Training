@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 /**
  * This class implements a hash table, which maps keys to values.
- * Collision is handled via "Separate Chaining" technique where the main idea is to make each cell of hash table point to a linked list of records that have same hash function value.
+ * Collision is handled via "Separate Chaining" technique where the main idea is
+ * to make each cell of hash table point to a linked list of records that have same hash function value.
  */
 public class HashTable<K, V> {
     private ArrayList<LinkedListNode<K, V>> array;
-    private double defaultLoadFactor = 0.75;
+    private static final double DEFAULT_LOAD_FACTOR = 0.75;
     private int initialCapacity;
     private int count;
 
@@ -49,8 +50,8 @@ public class HashTable<K, V> {
         }
         array.set(index, node);
         count++;
-        double loadFactor = (1.0 * count) / initialCapacity;
-        if (loadFactor > defaultLoadFactor) {
+        double loadFactor = ((double)count) / initialCapacity;
+        if (loadFactor > DEFAULT_LOAD_FACTOR) {
             rehash();
         }
     }
@@ -62,7 +63,9 @@ public class HashTable<K, V> {
      */
     public void remove(K key) {
         LinkedListNode<K, V> node = getNodeForKey(key);
-        assert node != null;
+        if (node == null) {
+            return;
+        }
         if (node.prev != null) {
             node.prev.next = node.next;
         } else {
@@ -97,8 +100,7 @@ public class HashTable<K, V> {
         if (index < 0 || index >= array.size()) {
             throw new IllegalArgumentException("Index cannot be less than 0 or more than size of array!");
         }
-        String s = array.get(index) == null ? "null" : array.get(index).printContent();
-        return s;
+        return array.get(index) == null ? "null" : array.get(index).printContent();
     }
 
     int getSize() {
@@ -137,7 +139,8 @@ public class HashTable<K, V> {
     }
 
     /**
-     * Increases the capacity of and internally reorganizes this hash table, in order to accommodate and access its entries more efficiently
+     * Increases the capacity of and internally reorganizes this hash table,
+     * in order to accommodate and access its entries more efficiently
      */
     private void rehash() {
         ArrayList<LinkedListNode<K, V>> temp = array;

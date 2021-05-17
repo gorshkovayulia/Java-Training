@@ -74,6 +74,13 @@ public class HashTableTest {
     }
 
     @Test
+    public void nullIsKeptAsValueIfUserTriesToDeleteKeyFromNullSlot() {
+        HashTable<Object, Object> table = new HashTable<>(10);
+        table.remove(6);
+        assertEquals("null", table.printSlot(6));
+    }
+
+    @Test
     public void possibleToRemoveElementHavingPreviousNode() {
         HashTable<Object, Object> table = new HashTable<>(10);
         table.put("t", 15);

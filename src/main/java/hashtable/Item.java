@@ -20,8 +20,4 @@ public class Item {
     public Object getKey() {
         return key;
     }
-
-    String printContent() {
-        return "(" + key + "," + value + ")";
-    }
 }
